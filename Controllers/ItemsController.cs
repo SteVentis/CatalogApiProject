@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using CatalogApiProject.Dtos;
 using CatalogApiProject.Entities;
 using CatalogApiProject.Repositories;
 using Microsoft.AspNetCore.Mvc;
@@ -9,16 +11,18 @@ namespace CatalogApiProject.Controllers
     [Route("api/[controller]")]
     public class ItemsController : ControllerBase
     {
-        private readonly InMemItemsRepo _repository; 
-        public ItemsController()
+        private readonly IItemsRepository _repository; 
+        public ItemsController(IItemsRepository repository)
         {
-            _repository = new InMemItemsRepo();
+            _repository = repository;
         }
 
         [HttpGet]
-        public IEnumerable<Item> GetItems()
+        public IEnumerable<ItemDto> GetItems()
         {
-            return _repository.GetItems();
+            var items = _repository.GetItems().Select(item => item.AsDto());
+            
+            return items;
         }
 
         [HttpGet("{id}")]
@@ -29,7 +33,7 @@ namespace CatalogApiProject.Controllers
             {
                 return NotFound();
             }
-            return Ok(item);
+            return Ok(item.AsDto());
         }
     }
 }
