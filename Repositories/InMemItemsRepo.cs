@@ -23,5 +23,16 @@ namespace CatalogApiProject.Repositories
         {
             return Items.Where(item => item.Id == id).SingleOrDefault();
         }
+
+        public void CreateItem(Item item)
+        {
+            Items.Add(item);
+        }
+
+        public void UpdateItem(Item item)
+        {
+            var index = Items.FindIndex(existingItem => existingItem.Id == item.Id);
+            Items[index] = item;
+        }
     }
 }

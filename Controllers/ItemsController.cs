@@ -35,5 +35,43 @@ namespace CatalogApiProject.Controllers
             }
             return Ok(item.AsDto());
         }
+
+        [HttpPost]
+        public ActionResult<ItemDto> CreateItem(CreateItemDto createItemDto)
+        {
+            Item item = new()
+            {
+                Id = Guid.NewGuid(),
+                Name = createItemDto.Name,
+                Price = createItemDto.Price,
+                CreatedDate = DateTimeOffset.UtcNow
+            };
+
+            _repository.CreateItem(item);
+
+            return CreatedAtAction(nameof(GetItem),new { Id = item.Id }, item.AsDto());
+        }
+
+        //PUT/items/id
+        [HttpPut("{id}")]
+        public ActionResult UpdateItem(Guid id, UpdateItemDto itemDto)
+        {
+            var existingItem = _repository.GetItem(id);
+
+            if(existingItem is null)
+            {
+                return NotFound();
+            }
+
+            Item updatedItem = existingItem with // With-expressions
+            {
+                Name = itemDto.Name,
+                Price = itemDto.Price
+            };
+
+            _repository.UpdateItem(updatedItem);
+
+            return NoContent();
+        }
     }
 }
