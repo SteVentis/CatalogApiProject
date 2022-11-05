@@ -35,7 +35,10 @@ namespace CatalogApiProject
             BsonSerializer.RegisterSerializer(new GuidSerializer(BsonType.String));
             BsonSerializer.RegisterSerializer(new DateTimeOffsetSerializer(BsonType.String));
             
-            services.AddControllers();
+            services.AddControllers(options => 
+            {
+                options.SuppressAsyncSuffixInActionNames = false;
+            });
 
             //Mongo Db Set Up
             services.AddSingleton<IMongoClient>(serviceProvider => 
